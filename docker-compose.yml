@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    container_name: postgres-container
+    image: ritchieelloumi/postgres1
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=usr
+      - POSTGRES_PASSWORD=pwd
+    volumes:
+      - /postgres/data:/var/lib/postgresql/data
+    networks:
+      - dev-ops-net
+  back:
+    container_name: simple-api-container
+    image: simple-api-image2
+    depends_on:
+      - db
+    networks:
+      - dev-ops-net
+  httpd:
+    container_name: http-container
+    image: http-image-final
+    ports:
+      - "80:80"
+    depends_on:
+      - back
+    networks:
+      - dev-ops-net
+
+networks:
+  dev-ops-net:
+    driver: bridge
